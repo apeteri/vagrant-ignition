@@ -27,8 +27,6 @@ def merge_ignition(ignition_path, hostname, ip, internal_adapter, env)
     config = JSON.parse(File.read(ign_file), :symbolize_names => true)
   else
     config = ignition_template()
-    # set this so the write function at the end can be simple
-    ignition_path = "config.ign"
   end
 
   # Handle hostname
@@ -59,7 +57,7 @@ def merge_ignition(ignition_path, hostname, ip, internal_adapter, env)
     config[:passwd][:users] += [ssh_entry()]
   end
 
-  File.open(ignition_path + ".merged","wb") do |f|
+  File.open("config.ign.merged","wb") do |f|
     f.write(config.to_json)
   end
 end
