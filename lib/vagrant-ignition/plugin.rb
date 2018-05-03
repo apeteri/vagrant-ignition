@@ -13,7 +13,7 @@ module VagrantPlugins
       
       action_hook(:setup_ignition, :machine_action_up) do |hook|
         require_relative "action/setup_ignition"
-        hook.after VagrantPlugins::ProviderVirtualBox::Action::Import, Action::SetupIgnition
+        hook.before VagrantPlugins::ProviderVirtualBox::Action::Boot, Action::SetupIgnition
       end
     end
   end
