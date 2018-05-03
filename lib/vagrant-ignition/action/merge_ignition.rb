@@ -8,8 +8,8 @@ def hostname_entry(hostname)
   {filesystem: "root", path: "/etc/hostname", contents: {source: "data:,%s" % hostname, verification: {}}, mode: 0644, user: {id: 0}, group: {id: 0}}
 end
 
-def ip_entry(ip)
-  {name: "00-eth1.network", contents: "[Match]\nName=eth1\n\n[Network]\nAddress=%s" % ip}
+def ip_entry(ip, internal_adapter)
+  {name: "00-%s.network" % internal_adapter, contents: "[Match]\nName=%s\n\n[Network]\nAddress=%s" % [ internal_adapter, ip ]}
 end
 
 # Vagrant insecure key
@@ -21,7 +21,7 @@ end
 
 HOSTNAME_REGEX = /^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$/
 
-def merge_ignition(ignition_path, hostname, ip, env)
+def merge_ignition(ignition_path, hostname, ip, internal_adapter, env)
   if !ignition_path.nil?
     ign_file = File.new(ignition_path, "rb")
     config = JSON.parse(File.read(ign_file), :symbolize_names => true)
@@ -42,11 +42,11 @@ def merge_ignition(ignition_path, hostname, ip, env)
     end
   end
 
-  # Handle eth1
+  # Handle internal network NIC
   if !ip.nil?
     config[:networkd] ||= {:units => []}
     config[:networkd][:units] ||= []
-    config[:networkd][:units] += [ip_entry(ip)]
+    config[:networkd][:units] += [ip_entry(ip, internal_adapter)]
   end
 
   # Handle ssh key
