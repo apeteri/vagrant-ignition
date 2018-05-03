@@ -38,8 +38,8 @@ module VagrantPlugins
         @internal_adapter = "eth1"           if @internal_adapter == UNSET_VALUE
         @ip               = nil              if @ip               == UNSET_VALUE
         @controller       = "IDE Controller" if @controller       == UNSET_VALUE
-        @device           = 0                if @device           == UNSET_VALUE
-        @port             = 1                if @port             == UNSET_VALUE
+        @device           = 1                if @device           == UNSET_VALUE
+        @port             = 0                if @port             == UNSET_VALUE
       end
     end
   end
