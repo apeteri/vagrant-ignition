@@ -11,15 +11,15 @@ def vmdk_gen(ignition_path, drive_name, drive_root, hostname, ip, internal_adapt
   vmdk_name = drive_name + ".vmdk"
   config_drive = drive_name + ".img"
   merge_ignition(ignition_path, hostname, ip, internal_adapter, env)
-  if !ignition_path.nil?
-    IgnitionDiskGenerator.create_disk(ignition_path + ".merged", config_drive)
-  else
-    IgnitionDiskGenerator.create_disk("config.ign.merged", config_drive)
-  end
+  IgnitionDiskGenerator.create_disk("config.ign.merged", config_drive)
 
   if File.exist?(vmdk_name)
     File.delete(vmdk_name)
   end
   env[:machine].provider.driver.execute("internalcommands", "createrawvmdk", "-filename", "#{vmdk_name}", "-rawdisk", "#{config_drive}")
+
+  if File.exist?("config.ign.merged")
+    File.delete("config.ign.merged")
+  end
   Dir.chdir(orig_dir)
 end
