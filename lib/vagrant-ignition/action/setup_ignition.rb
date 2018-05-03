@@ -21,12 +21,17 @@ module VagrantPlugins
           drive_root = env[:machine].config.ignition.drive_root
 
           hostname = env[:machine].config.ignition.hostname
+          internal_adapter = env[:machine].config.ignition.internal_adapter
           ip = env[:machine].config.ignition.ip
 
-          vmdk_gen(config_path, drive_name, drive_root, hostname, ip, env)
+          controller = env[:machine].config.ignition.controller
+          device = env[:machine].config.ignition.device
+          port = env[:machine].config.ignition.port
+
+          vmdk_gen(config_path, drive_name, drive_root, hostname, ip, internal_adapter, env)
 
           env[:machine].ui.info "Configuring Ignition Config Drive"
-          env[:machine].provider.driver.execute("storageattach", "#{env[:machine].id}", "--storagectl", "SATA", "--device", "3", "--port", "0", "--type", "hdd", "--medium", "#{File.join(drive_root, (drive_name + ".vmdk"))}")
+          env[:machine].provider.driver.execute("storageattach", "#{env[:machine].id}", "--storagectl", "#{controller}", "--device", "#{device}", "--port", "#{port}", "--type", "hdd", "--medium", "#{File.join(drive_root, (drive_name + ".vmdk"))}")
 
           # Continue through the middleware chain
           @app.call(env)
