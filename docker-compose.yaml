@@ -1,0 +1,10 @@
+version: '2'
+services:
+  build:
+    image: ruby:2.5.1
+    volumes: 
+    - ./:/usr/src/vagrant-ignition
+    command:
+    - bash 
+    - -c 
+    - cd /usr/src/vagrant-ignition && gem build vagrant-ignition.gemspec
